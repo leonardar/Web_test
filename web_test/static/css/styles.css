@@ -1,0 +1,53 @@
+/* * { */
+/* 	margin: 0; */
+/* 	padding: 0; */
+
+/* } */
+table, th, td {
+    width: 600px;
+  border: 1px solid white;
+  border-collapse: collapse;
+  background: #daf2e4;
+  text-align:center;
+}
+
+.styled-table {
+
+	border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 120px;
+    margin-bottom: 20px;
+    vertical-align: middle
+}
+
+.block {
+        text-align:center;
+        float:left;
+        text-align:center;
+        background-color: #184a23;
+        margin-bottom:10px;
+        vertical-align: middle;
+}
+
+.submit {
+        background-color: white;
+}

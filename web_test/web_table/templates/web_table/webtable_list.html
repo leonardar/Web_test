@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block css %}
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="/static/css/styles.css" rel="stylesheet">
+    {% endblock %}
+    <title>Title</title>
+    <style type="text/css">
+    BODY {
+        background: url("/static/img/flower.jpg.css");
+    }
+    </style>
+</head>
+<body>
+
+{% block content %}
+<div class="container">
+    <form action="{% url 'web_table:table_list' %}" method="post">
+        {% csrf_token %}
+        <div class="block">
+            <div>
+                <label for="{{form.column.id_for_label}}"></label>
+                {{ form.column }}
+            </div>
+        </div>
+        <div class="block">
+            <div>
+                <label for="{{form.condition.id_for_label}}"></label>
+                {{ form.condition }}
+            </div>
+        </div>
+        <div class="block">
+            <label for="{{ form.value_input.id_for_label }}"></label>
+            {{ form.value_input }}
+        </div>
+        <div class="block">
+            <div>
+                <input class="submit" type="submit" value="Отфильтровать">
+            </div>
+        </div>
+        <div class="block">
+            <div>
+                <input class="submit" type="submit" name="clean_session" value="Очистить">
+            </div>
+        </div>
+    </form>
+</div>
+<div id="data_post">
+    <table class="container" class="styled-table">
+        <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Название</th>
+            <th>Количество, шт</th>
+            <th>Расстояние, км</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in object_list %}
+        <tr>
+            <td>{{ row.date_entity }}</td>
+            <td>{{ row.title }}</td>
+            <td>{{ row.quantity }}</td>
+            <td>{{ row.distance_entity }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <nav id="pagination">
+        <ul class="pagination justify-content-center">
+            {% if object_list.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="{{ request.path }}?page={{ object_list.previous_page_number }}"><</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><</a>
+            </li>
+            {% endif %}
+            {% for page in object_list.paginator.page_range %}
+            {% if object_list.number == page %}
+            <li class="page-item active">
+                <a class="page-link" href="{{request.path}}?page={{ page }}">{{page}}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="{{request.path}}?page={{ page }}">{{page}}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if object_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ request.path }}?page={{ object_list.next_page_number }}">></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">></a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+        function ajaxPagination() {
+            $('#pagination a.page-link').each((index,el) => {
+                $(el).click((e) => {
+                    e.preventDefault()
+                    let page_url = $(el).attr('href')
+                    $.ajax({
+                        url: page_url,
+                        type: 'GET',
+                        success: (data) => {
+                            $('#data_post').empty()
+                            $('#data_post').append( $(data).filter('#data_post').html() )
+                            $('#pagination').empty()
+                            $('#pagination').append( $(data).find('#pagination').html() )
+                        }
+                    })
+                })
+            })
+        }
+
+        $(document).ready(function() {
+            ajaxPagination()
+        })
+
+        $(document).ajaxStop(function() {
+            ajaxPagination()
+        })
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+{% endblock %}
+
+</body>
+</html>
